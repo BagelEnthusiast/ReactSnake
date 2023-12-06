@@ -1,7 +1,7 @@
 export const CONSTANTS = new class {
-  MaxX = 32;
-  MaxY = 18;
+  readonly MaxX = 32;
+  readonly MaxY = 18;
 
-  BlockWidth = 100 / this.MaxX;
-  BlockHeight = 100 / this.MaxY;
+  readonly BlockWidth = 100 / this.MaxX;
+  readonly BlockHeight = 100 / this.MaxY;
 }();
