@@ -25,5 +25,5 @@ export function useArrowKeys(
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [callback]);
 }
