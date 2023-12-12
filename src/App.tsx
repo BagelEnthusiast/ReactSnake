@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowKey, useArrowKeys } from './useKeyboard';
 import { Block, getGrid } from './Block'
 import { Point } from './interfaces'
@@ -8,54 +8,51 @@ import { Point } from './interfaces'
 function App() {
   const [block, setBlock] = useState<Point>({ x: 5, y: 5 });
   const [tail, setTail] = useState<Point>({x: 5, y: 4})
+  const [direction, setDirection] = useState('Up')
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (direction === 'Up') {
+        const newBlock = { ...block };
+        newBlock.y++;
+        setBlock(newBlock)
+        setTail({ ...block })
+      }
+      if (direction === 'Down') {
+        const newBlock = { ...block };
+        newBlock.y--;
+        setBlock(newBlock)
+        setTail({ ...block })
+      }
+      if (direction === 'Left') {
+        const newBlock = { ...block };
+        newBlock.x--;
+        setBlock(newBlock)
+        setTail({ ...block })
+      }
+      if (direction === 'Right') {
+        const newBlock = { ...block };
+        newBlock.x++;
+        setBlock(newBlock)
+        setTail({ ...block })
+      }
+    }, 1000);
+  
+    return () => clearInterval(interval);
+  }, [direction, block])
+
   useArrowKeys(arrow => {
     if (arrow === ArrowKey.Up) {
-      setTail({ ...block })
-      const newBlock = { ...block };
-      newBlock.y++;
-      setBlock(newBlock)
+      setDirection('Up')
     };
     if (arrow === ArrowKey.Down) {
-      setTail(t => {
-        console.log('setting tail')
-        console.log('block coords: ', `${block.x}, ${block.y}`)
-        const newTail = { ...t };
-        newTail.x = block.x;
-        newTail.y = block.y;
-        return newTail
-      })
-      setBlock(b => { 
-        console.log('hitting set block')
-        const newBlock = { ...b };
-        newBlock.y--;
-        return newBlock;
-      });
+      setDirection('Down')
     };
     if (arrow === ArrowKey.Left) {
-      setTail(t => {
-        const newTail = { ...t };
-        newTail.x = block.x;
-        newTail.y = block.y;
-        return newTail
-      })
-      setBlock(b => { 
-        const newBlock = { ...b };
-        newBlock.x--;
-        return newBlock;
-      });
+      setDirection('Left')
     };
     if (arrow === ArrowKey.Right) {
-      setTail(t => {
-        const newTail = { ...t };
-        newTail.x = block.x;
-        newTail.y = block.y;
-        return newTail
-      })
-      setBlock(b => { 
-        const newBlock = { ...b };
-        newBlock.x++;
-        return newBlock;
-      });
+      setDirection('Right')
     };
   });
 
