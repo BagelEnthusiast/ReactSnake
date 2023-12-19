@@ -20,7 +20,7 @@ function App() {
       setApple(newApple)
       const newTailArr = [ ...tailArr ]
       const newTailBlock = { ...tailArr[tailArr.length - 1]}
-      
+
       newTailArr.push(newTailBlock)
       setTailArr([ ...newTailArr ])
     }
@@ -28,9 +28,17 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (direction === 'Up') {
+
+      const directionMap = {'Up': 1, 'Down': -1, 'Left': -1, 'Right': 1}
+
+      function onMove() {
         const newBlock = { ...block };
-        newBlock.y++;
+        if (direction === 'Left' || direction === 'Right') {
+          newBlock.x+= directionMap[direction];
+        }
+        if (direction === 'Up' || direction === 'Down') {
+          newBlock.y+= directionMap[direction];
+        }
         setBlock(newBlock);
         const newTailArr = tailArr.map(block => {
           block.y++
@@ -38,39 +46,19 @@ function App() {
         })
         console.log('tail:', JSON.stringify(newTailArr))
         setTailArr([ ...newTailArr ])
+      }
+
+      if (direction === 'Up') {
+        onMove()
       }
       if (direction === 'Down') {
-        const newBlock = { ...block };
-        newBlock.y--;
-        setBlock(newBlock);
-        const newTailArr = tailArr.map(block => {
-          block.y++
-          return block
-        })
-        console.log('tail:', JSON.stringify(newTailArr))
-        setTailArr([ ...newTailArr ])
+        onMove()
       }
       if (direction === 'Left') {
-        const newBlock = { ...block };
-        newBlock.x--;
-        setBlock(newBlock);
-        const newTailArr = tailArr.map(block => {
-          block.y++
-          return block
-        })
-        console.log('tail:', JSON.stringify(newTailArr))
-        setTailArr([ ...newTailArr ])
+        onMove()
       }
       if (direction === 'Right') {
-        const newBlock = { ...block };
-        newBlock.x++;
-        setBlock(newBlock);
-        const newTailArr = tailArr.map(block => {
-          block.y++
-          return block
-        })
-        console.log('tail:', JSON.stringify(newTailArr))
-        setTailArr([ ...newTailArr ])
+        onMove()
       }
     }, 500);
   
