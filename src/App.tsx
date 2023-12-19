@@ -1,83 +1,64 @@
-import { useEffect, useState } from 'react';
-import { ArrowKey, useArrowKeys } from './useKeyboard';
-import { Block, getGrid } from './Block'
-import { Point } from './interfaces'
-
-
+import { useEffect, useState } from "react";
+import { ArrowKey, useArrowKeys } from "./useKeyboard";
+import { Block, getGrid } from "./Block";
+import { Point } from "./interfaces";
 
 function App() {
   const [block, setBlock] = useState<Point>({ x: 5, y: 5 });
-  const [tailArr, setTailArr] = useState<Point[]>([{x: 5, y: 4}])
+  const [tailArr, setTailArr] = useState<Point[]>([{ x: 5, y: 4 }]);
   const [apple, setApple] = useState<Point>({ x: 10, y: 8 });
-  const [direction, setDirection] = useState('Up')
+  const [direction, setDirection] = useState("Up");
 
   useEffect(() => {
     if (block.x === apple.x && block.y === apple.y) {
-      console.log('hitting apple')
+      console.log("hitting apple");
       const newApple = { ...apple };
-      newApple.x = Math.floor(Math.random() * (20 - 1 + 1)) + 1
-      newApple.y = Math.floor(Math.random() * (20 - 1 + 1)) + 1
-      setApple(newApple)
-      const newTailArr = [ ...tailArr ]
-      const newTailBlock = { ...tailArr[tailArr.length - 1]}
+      newApple.x = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
+      newApple.y = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
+      setApple(newApple);
+      const newTailArr = [...tailArr];
+      const newTailBlock = { ...tailArr[tailArr.length - 1] };
 
-      newTailArr.push(newTailBlock)
-      setTailArr([ ...newTailArr ])
+      newTailArr.push(newTailBlock);
+      setTailArr([...newTailArr]);
     }
-  }, [block])
+  }, [block]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-
-      const directionMap = {'Up': 1, 'Down': -1, 'Left': -1, 'Right': 1}
-
-      function onMove() {
-        const newBlock = { ...block };
-        if (direction === 'Left' || direction === 'Right') {
-          newBlock.x+= directionMap[direction];
-        }
-        if (direction === 'Up' || direction === 'Down') {
-          newBlock.y+= directionMap[direction];
-        }
-        setBlock(newBlock);
-        const newTailArr = tailArr.map(block => {
-          block.y++
-          return block
-        })
-        console.log('tail:', JSON.stringify(newTailArr))
-        setTailArr([ ...newTailArr ])
+      const directionMap = { Up: 1, Down: -1, Left: -1, Right: 1 };
+      const newBlock = { ...block };
+      if (direction === "Left" || direction === "Right") {
+        newBlock.x += directionMap[direction];
       }
-
-      if (direction === 'Up') {
-        onMove()
+      if (direction === "Up" || direction === "Down") {
+        newBlock.y += directionMap[direction];
       }
-      if (direction === 'Down') {
-        onMove()
-      }
-      if (direction === 'Left') {
-        onMove()
-      }
-      if (direction === 'Right') {
-        onMove()
-      }
+      setBlock(newBlock);
+      const newTailArr = tailArr.map((block) => {
+        block.y++;
+        return block;
+      });
+      console.log("tail:", JSON.stringify(newTailArr));
+      setTailArr([...newTailArr]);
     }, 500);
-  
-    return () => clearInterval(interval);
-  }, [direction, block])
 
-  useArrowKeys(arrow => {
+    return () => clearInterval(interval);
+  }, [direction, block]);
+
+  useArrowKeys((arrow) => {
     if (arrow === ArrowKey.Up) {
-      setDirection('Up')
-    };
+      setDirection("Up");
+    }
     if (arrow === ArrowKey.Down) {
-      setDirection('Down')
-    };
+      setDirection("Down");
+    }
     if (arrow === ArrowKey.Left) {
-      setDirection('Left')
-    };
+      setDirection("Left");
+    }
     if (arrow === ArrowKey.Right) {
-      setDirection('Right')
-    };
+      setDirection("Right");
+    }
   });
 
   return (
@@ -88,13 +69,13 @@ function App() {
       <Block point={block} color="black" />
 
       {/* todo just for testing */}
-      {tailArr.map(b => {
-        <Block point={b} color="green" />
+      {tailArr.map((b) => {
+        <Block point={b} color="green" />;
       })}
       <Block point={{ x: 4, y: 2 }} color="blue" />
       <Block point={apple} color="red" />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
