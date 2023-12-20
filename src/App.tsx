@@ -2,49 +2,53 @@ import { useEffect, useState } from "react";
 import { ArrowKey, useArrowKeys } from "./useKeyboard";
 import { Block, getGrid } from "./Block";
 import { Point } from "./interfaces";
+import { v4 as uuidv4 } from "uuid";
 
 function App() {
-  const [block, setBlock] = useState<Point>({ x: 5, y: 5 });
-  const [tailArr, setTailArr] = useState<Point[]>([{ x: 5, y: 4 }]);
+  const [snake, setSnake] = useState<Point[]>([
+    { x: 5, y: 5 },
+    { x: 5, y: 4 },
+  ]);
   const [apple, setApple] = useState<Point>({ x: 10, y: 8 });
-  const [direction, setDirection] = useState("Up");
+  const [direction, setDirection] = useState<"Up" | "Down" | "Left" | "Right">(
+    "Up"
+  );
+
+  function addSnakeBlock(grow:boolean) {
+    const delta = {
+      Up: { x: 0, y: 1 },
+      Down: { x: 0, y: -1 },
+      Left: { x: -1, y: 0 },
+      Right: { x: 1, y: 0 },
+    }[direction];
+    const newHead = { ...snake[0] };
+    newHead.x += delta.x;
+    newHead.y += delta.y;
+    const newSnake = [...snake];
+    newSnake.unshift(newHead);
+    if (!grow) {
+      newSnake.pop();
+    }
+    setSnake([...newSnake]);
+  }
 
   useEffect(() => {
-    if (block.x === apple.x && block.y === apple.y) {
-      console.log("hitting apple");
+    if (snake[0].x === apple.x && snake[0].y === apple.y) {
       const newApple = { ...apple };
-      newApple.x = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
-      newApple.y = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
+      newApple.x = Math.floor(Math.random() * (15 - 1 + 1)) + 1;
+      newApple.y = Math.floor(Math.random() * (15 - 1 + 1)) + 1;
       setApple(newApple);
-      const newTailArr = [...tailArr];
-      const newTailBlock = { ...tailArr[tailArr.length - 1] };
-
-      newTailArr.push(newTailBlock);
-      setTailArr([...newTailArr]);
+      addSnakeBlock(true)
     }
-  }, [block]);
+  }, [snake[0]]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const directionMap = { Up: 1, Down: -1, Left: -1, Right: 1 };
-      const newBlock = { ...block };
-      if (direction === "Left" || direction === "Right") {
-        newBlock.x += directionMap[direction];
-      }
-      if (direction === "Up" || direction === "Down") {
-        newBlock.y += directionMap[direction];
-      }
-      setBlock(newBlock);
-      const newTailArr = tailArr.map((block) => {
-        block.y++;
-        return block;
-      });
-      console.log("tail:", JSON.stringify(newTailArr));
-      setTailArr([...newTailArr]);
+      addSnakeBlock(false);
     }, 500);
 
     return () => clearInterval(interval);
-  }, [direction, block]);
+  }, [direction, snake[0]]);
 
   useArrowKeys((arrow) => {
     if (arrow === ArrowKey.Up) {
@@ -66,16 +70,20 @@ function App() {
       {getGrid().map((p, index) => (
         <Block key={`grid-${index}`} point={p} color="white" />
       ))}
-      <Block point={block} color="black" />
-
       {/* todo just for testing */}
-      {tailArr.map((b) => {
-        <Block point={b} color="green" />;
+      {snake.map((b, index) => {
+        if (index === 0) {
+          return <Block key={uuidv4()} point={b} color="black" />;
+        } else {
+          return <Block key={uuidv4()} point={b} color="green" />;
+        }
       })}
       <Block point={{ x: 4, y: 2 }} color="blue" />
       <Block point={apple} color="red" />
     </>
   );
+
+
 }
 
 export default App;
