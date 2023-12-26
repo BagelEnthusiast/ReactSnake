@@ -10,6 +10,6 @@ export function useInterval(callback: () => void) {
   useEffect(() => {
     setInterval(() => {
       callbackRef.current();
-    }, 2000);
+    }, 1000);
   }, []);
 }

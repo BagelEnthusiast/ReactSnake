@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowKey, useArrowKeys } from "./useKeyboard";
 import { Block, getGrid } from "./Block";
 import { Point } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
-import { useInterval } from "./useInterval"
+import { useInterval } from "./useInterval";
 
 function App() {
   const [snake, setSnake] = useState<Point[]>([
@@ -15,37 +15,35 @@ function App() {
     "Up"
   );
 
-  function addSnakeBlock(grow:boolean) {
+  function addSnakeBlock() {
     const delta = {
       Up: { x: 0, y: 1 },
       Down: { x: 0, y: -1 },
       Left: { x: -1, y: 0 },
       Right: { x: 1, y: 0 },
     }[direction];
+
     const newHead = { ...snake[0] };
     newHead.x += delta.x;
     newHead.y += delta.y;
     const newSnake = [...snake];
     newSnake.unshift(newHead);
-    if (!grow) {
-      newSnake.pop();
-    }
-    setSnake([...newSnake]);
-  }
 
-  useEffect(() => {
-    if (snake[0].x === apple.x && snake[0].y === apple.y) {
+    if (newHead.x === apple.x && newHead.y === apple.y) {
       const newApple = { ...apple };
       newApple.x = Math.floor(Math.random() * (15 - 1 + 1)) + 1;
       newApple.y = Math.floor(Math.random() * (15 - 1 + 1)) + 1;
       setApple(newApple);
-      addSnakeBlock(true)
+    } else {
+      newSnake.pop();
     }
-  }, [snake[0]]);
+
+    setSnake([...newSnake]);
+  }
 
   useInterval(() => {
-    addSnakeBlock(false);
-  })
+    addSnakeBlock();
+  });
 
   useArrowKeys((arrow) => {
     if (arrow === ArrowKey.Up) {
@@ -79,8 +77,6 @@ function App() {
       <Block point={apple} color="red" />
     </>
   );
-
-
 }
 
 export default App;
