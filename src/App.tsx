@@ -3,6 +3,7 @@ import { ArrowKey, useArrowKeys } from "./useKeyboard";
 import { Block, getGrid } from "./Block";
 import { Point } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
+import { useInterval } from "./useInterval"
 
 function App() {
   const [snake, setSnake] = useState<Point[]>([
@@ -42,13 +43,9 @@ function App() {
     }
   }, [snake[0]]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      addSnakeBlock(false);
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [direction, snake[0]]);
+  useInterval(() => {
+    addSnakeBlock(false);
+  })
 
   useArrowKeys((arrow) => {
     if (arrow === ArrowKey.Up) {
