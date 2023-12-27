@@ -4,6 +4,7 @@ import { Block, getGrid } from "./Block";
 import { Point } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 import { useInterval } from "./useInterval";
+import { CONSTANTS } from "./constants";
 
 function App() {
   const [snake, setSnake] = useState<Point[]>([
@@ -11,9 +12,13 @@ function App() {
     { x: 5, y: 4 },
   ]);
   const [apple, setApple] = useState<Point>({ x: 10, y: 8 });
+
+  //TODO: change to enum
   const [direction, setDirection] = useState<"Up" | "Down" | "Left" | "Right">(
     "Up"
   );
+
+  //TODO: make lose condition
 
   function addSnakeBlock() {
     const delta = {
@@ -31,8 +36,8 @@ function App() {
 
     if (newHead.x === apple.x && newHead.y === apple.y) {
       const newApple = { ...apple };
-      newApple.x = Math.floor(Math.random() * (15 - 1 + 1)) + 1;
-      newApple.y = Math.floor(Math.random() * (15 - 1 + 1)) + 1;
+      newApple.x = Math.floor(Math.random() * (CONSTANTS.MaxX - 1));
+      newApple.y = Math.floor(Math.random() * (CONSTANTS.MaxY - 1));
       setApple(newApple);
     } else {
       newSnake.pop();
@@ -43,7 +48,7 @@ function App() {
 
   useInterval(() => {
     addSnakeBlock();
-  });
+  }, 300);
 
   useArrowKeys((arrow) => {
     if (arrow === ArrowKey.Up) {
