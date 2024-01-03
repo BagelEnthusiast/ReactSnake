@@ -31,6 +31,7 @@ function App() {
     const newHead = { ...snake[0] };
     newHead.x += delta.x;
     newHead.y += delta.y;
+
     const newSnake = [...snake];
     newSnake.unshift(newHead);
 
@@ -46,21 +47,23 @@ function App() {
     setSnake([...newSnake]);
   }
 
+  //TODO: add difficulty toggles for user, make time an enum
   useInterval(() => {
     addSnakeBlock();
   }, 300);
 
+  //TODO: ensure user cannot move snake opposite its current direction
   useArrowKeys((arrow) => {
-    if (arrow === ArrowKey.Up) {
+    if (arrow === ArrowKey.Up && direction != "Down") {
       setDirection("Up");
     }
-    if (arrow === ArrowKey.Down) {
+    if (arrow === ArrowKey.Down && direction != "Up") {
       setDirection("Down");
     }
-    if (arrow === ArrowKey.Left) {
+    if (arrow === ArrowKey.Left && direction != "Right") {
       setDirection("Left");
     }
-    if (arrow === ArrowKey.Right) {
+    if (arrow === ArrowKey.Right && direction != "Left") {
       setDirection("Right");
     }
   });
